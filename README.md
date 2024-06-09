@@ -13,7 +13,7 @@ Given two vectors $u, v \in V$ being $V$ a linear space, the projection of $v$ o
 
 $proj_uv = u \frac{(v, u)}{(u, u)}$
 
-for a given inner product $( ⋅ , ⋅)$
+for a given inner product $(⋅ , ⋅)$
 
 ### Frobenius inner product
 The inner product for the vector space of linear transformations.

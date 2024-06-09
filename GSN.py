@@ -2,11 +2,11 @@ import torch
 from torch import nn, Tensor
 from torch.nn import init
 
-def inner(u: Tensor, v: Tensor) -> Tensor:
-    return torch.trace(u.transpose(-1, -2) @ v)
+def inner(v: Tensor, u: Tensor) -> Tensor:
+    return torch.trace(v.transpose(-1, -2) @ u)
 
 def proj(u: Tensor, v: Tensor) -> Tensor:
-    return u * (inner(u, v) / inner(u, u))
+    return u * (inner(v, u) / inner(u, u))
 
 def norm(v: Tensor) -> Tensor:
     return torch.sqrt(inner(v, v))
@@ -34,8 +34,9 @@ class GramSchmidtLayer(nn.Module):
         for t in range(self.num_linears):
             curr_weight = weight[:, :, t]
             if t > 0:
-                prev_weight = weight[:, :, t-1]
-                curr_weight = eff_gram_schmidt(prev_weight, curr_weight)
+                prev_weight: Tensor = weight[:, :, :t-1]
+                for i in range(t):
+                    curr_weight -= proj(prev_weight[:, :, i], curr_weight)
             norm_val = norm(curr_weight)
             if norm_val != 0:
                 weight[:, :, t] /= norm_val
