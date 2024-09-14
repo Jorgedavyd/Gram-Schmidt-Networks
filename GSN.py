@@ -14,7 +14,7 @@ def norm(v: Tensor) -> Tensor:
 def eff_gram_schmidt(prior: Tensor, next: Tensor) -> Tensor:
     next -= proj(prior, next)
     return next
-            
+
 class GramSchmidtLayer(nn.Module):
     def __init__(
             self,
@@ -29,7 +29,7 @@ class GramSchmidtLayer(nn.Module):
 
     def _init_weight(self) -> None:
         init.xavier_normal_(self.weight)
-        
+
     def gram_schmidt(self, weight) -> Tensor:
         for t in range(self.num_linears):
             curr_weight = weight[:, :, t]
@@ -45,4 +45,4 @@ class GramSchmidtLayer(nn.Module):
     def forward(self, input: Tensor) -> Tensor:
         weight = self.gram_schmidt(self.weight)
         out = torch.einsum('bi,ioj->boj', input, weight)
-        return out.sum(-1) 
+        return out.sum(-1)
